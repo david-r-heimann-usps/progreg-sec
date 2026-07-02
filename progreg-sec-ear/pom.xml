@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.progreg</groupId>
+        <artifactId>progreg-sec</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>progreg-sec-ear</artifactId>
+    <packaging>ear</packaging>
+    <name>progreg-sec-ear</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.progreg</groupId>
+            <artifactId>progreg-sec-webapp</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- Produces progreg-sec.ear -->
+        <finalName>progreg-sec</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <!-- Java EE 7 application (targets WebSphere 8.5.5+) -->
+                    <version>7</version>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <modules>
+                        <webModule>
+                            <groupId>com.progreg</groupId>
+                            <artifactId>progreg-sec-webapp</artifactId>
+                            <!-- Explicit file name so the WAR is always
+                                 progreg-sec-webapp.war inside the EAR -->
+                            <bundleFileName>progreg-sec-webapp.war</bundleFileName>
+                            <contextRoot>/progreg-sec</contextRoot>
+                        </webModule>
+                    </modules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
