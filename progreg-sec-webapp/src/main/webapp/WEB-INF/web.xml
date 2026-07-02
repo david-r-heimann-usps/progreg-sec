@@ -84,4 +84,56 @@
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
 
+    <!-- ================================================================
+         Java EE Security – used by WebSphere container-managed security
+         (websphere profile).  WebSphere enforces these constraints before
+         the request reaches Spring Security; Spring Security then reads
+         the already-authenticated principal via the JEE pre-auth filter.
+         ================================================================ -->
+
+    <!-- Protect all application resources; any of the declared roles may access. -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Protected Resources</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>USER</role-name>
+            <role-name>ADMIN</role-name>
+            <role-name>MANAGER</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- Allow unauthenticated access to the login page itself. -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Login Page</web-resource-name>
+            <url-pattern>/login.jsp</url-pattern>
+        </web-resource-collection>
+        <!-- No <auth-constraint> = no authentication required. -->
+    </security-constraint>
+
+    <!-- FORM-based login: WebSphere redirects unauthenticated users to
+         /login.jsp and re-displays it (with ?error) on failure. -->
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>ProgReg Security</realm-name>
+        <form-login-config>
+            <form-login-page>/login.jsp</form-login-page>
+            <form-error-page>/login.jsp?error</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <!-- Role declarations must match the roles used in security-constraint
+         and in WebSphereSecurityConfig#mappableRoles. -->
+    <security-role>
+        <role-name>USER</role-name>
+    </security-role>
+    <security-role>
+        <role-name>ADMIN</role-name>
+    </security-role>
+    <security-role>
+        <role-name>MANAGER</role-name>
+    </security-role>
+
 </web-app>
