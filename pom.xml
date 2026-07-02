@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.progreg</groupId>
+    <artifactId>progreg-sec</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>progreg-sec</name>
+    <description>Program Registry Security Application – EAR/WAR for WebSphere</description>
+
+    <modules>
+        <module>progreg-sec-webapp</module>
+        <module>progreg-sec-ear</module>
+    </modules>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring.version>5.3.39</spring.version>
+        <spring.security.version>5.8.15</spring.security.version>
+        <servlet.api.version>3.1.0</servlet.api.version>
+        <!-- Default to empty; override via -Pokta / -Pwebsphere / -Pdb,
+             or set spring.profiles.active as a JVM property in WebSphere. -->
+        <spring.active.profiles></spring.active.profiles>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring Framework BOM -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>${spring.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Spring Security BOM -->
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-bom</artifactId>
+                <version>${spring.security.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Servlet API – provided by WebSphere -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet.api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- SLF4J -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.36</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                    <configuration>
+                        <source>1.8</source>
+                        <target>1.8</target>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.3.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ear-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <!-- =========================================================
+         Maven build profiles
+         Build with:  mvn package -Pokta       → Okta/OIDC
+                      mvn package -Pwebsphere  → WebSphere container auth
+                      mvn package -Pdb         → JDBC database auth
+         Each profile bakes spring.active.profiles into web.xml via
+         Maven resource filtering.  You can also override it at runtime
+         by setting the JVM system property spring.profiles.active in
+         the WebSphere server configuration.
+         ========================================================= -->
+    <profiles>
+
+        <!-- Okta: OAuth2/OIDC authentication; users and groups managed in Okta -->
+        <profile>
+            <id>okta</id>
+            <properties>
+                <spring.active.profiles>okta</spring.active.profiles>
+            </properties>
+        </profile>
+
+        <!-- WebSphere: delegate authentication to WebSphere container-managed security -->
+        <profile>
+            <id>websphere</id>
+            <properties>
+                <spring.active.profiles>websphere</spring.active.profiles>
+            </properties>
+        </profile>
+
+        <!-- DB: authenticate and authorise via JDBC datasource jdbc/progreg -->
+        <profile>
+            <id>db</id>
+            <properties>
+                <spring.active.profiles>db</spring.active.profiles>
+            </properties>
+        </profile>
+
+    </profiles>
+
+</project>

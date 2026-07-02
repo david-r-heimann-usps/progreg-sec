@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    WebSphere web-module bindings.
+
+    Maps the logical resource reference jdbc/progreg declared in web.xml
+    to the actual WebSphere datasource named jdbc/progreg.  Adjust the
+    binding-name if your WebSphere datasource JNDI name differs.
+-->
+<web-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee
+                             http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd"
+         version="1.0">
+
+    <virtual-host name="default_host"/>
+
+    <!-- Bind the jdbc/progreg resource-ref to the WebSphere datasource -->
+    <resource-ref name="jdbc/progreg" binding-name="jdbc/progreg"/>
+
+</web-bnd>
