@@ -11,6 +11,49 @@
     <packaging>pom</packaging>
     <name>progreg-sec</name>
     <description>Program Registry Security Application – EAR/WAR for WebSphere</description>
+<repositories>
+  <repository>
+    <id>repo-files.0</id>
+    <url>file://${project.basedir}/repo-files</url>
+  </repository>
+  <repository>
+    <id>repo-files.1</id>
+    <url>file://${project.basedir}/../repo-files</url>
+  </repository>
+
+  <repository>
+      <id>central</id>
+      <url>https://artifactory.usps.gov/artifactory/repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>snapshots</id>
+      <url>https://artifactory.usps.gov/artifactory/repo</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>  
+  
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <url>https://artifactory.usps.gov/artifactory/repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>snapshots</id>
+      <url>https://artifactory.usps.gov/artifactory/repo</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </pluginRepository>
+   </pluginRepositories>
+	
 
     <modules>
         <module>progreg-sec-webapp</module>
