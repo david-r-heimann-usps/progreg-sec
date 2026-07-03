@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class LogoffController {
 
+    private final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+
     @PostMapping("/logoff")
     public String logoff(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        new SecurityContextLogoutHandler().logout(request, response, authentication);
+        logoutHandler.logout(request, response, authentication);
         return "redirect:/logoff-success";
     }
 
