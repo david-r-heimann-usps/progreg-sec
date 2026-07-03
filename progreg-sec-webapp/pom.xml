@@ -97,12 +97,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <!-- Allow builds without web.xml (Servlet 3.0+) -->
+                    <!-- Allow builds without a conventional web.xml (Servlet 3.0+) -->
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <!-- Apply Maven property substitution inside web.xml
-                         so that ${spring.active.profiles} is replaced.
-                         Default descriptor (websphere): web.xml -->
+                    <!-- Apply Maven property substitution inside the selected
+                         deployment descriptor so that
+                         ${spring.active.profiles} is replaced. -->
                     <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                    <webXml>src/main/webapp/WEB-INF/web-websphere.xml</webXml>
                 </configuration>
             </plugin>
         </plugins>
@@ -110,7 +111,7 @@
 
     <!-- =========================================================
          Profile-specific web descriptor selection.
-         -Pwebsphere → web.xml       (WebSphere container auth)
+         default/-Pwebsphere → web-websphere.xml  (WebSphere container auth)
          -Pokta      → web-okta.xml  (Okta/OIDC, no container auth)
          -Pdb        → web-db.xml    (JDBC auth, no container auth)
          ========================================================= -->

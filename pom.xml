@@ -140,10 +140,10 @@
          Build with:  mvn package -Pokta       → Okta/OIDC
                       mvn package -Pwebsphere  → WebSphere container auth
                       mvn package -Pdb         → JDBC database auth
-         Each profile bakes spring.active.profiles into web.xml via
-         Maven resource filtering.  You can also override it at runtime
-         by setting the JVM system property spring.profiles.active in
-         the WebSphere server configuration.
+         Each profile bakes spring.active.profiles into the selected
+         web descriptor via Maven resource filtering.  You can also
+         override it at runtime by setting the JVM system property
+         spring.profiles.active in the WebSphere server configuration.
          ========================================================= -->
     <profiles>
 
