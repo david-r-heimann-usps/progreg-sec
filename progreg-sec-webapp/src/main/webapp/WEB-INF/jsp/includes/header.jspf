@@ -1,6 +1,12 @@
 <header>
     <a href="${pageContext.request.contextPath}/">progreg-sec</a>
     <span> | </span>
-    <a href="${pageContext.request.contextPath}/logoff">Log Out</a>
+    <form action="${pageContext.request.contextPath}/logoff" method="post" style="display:inline;">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <button type="submit"
+                style="background:none;border:none;padding:0;color:#0000EE;text-decoration:underline;cursor:pointer;font:inherit;">
+            Log Out
+        </button>
+    </form>
 </header>
 <hr/>

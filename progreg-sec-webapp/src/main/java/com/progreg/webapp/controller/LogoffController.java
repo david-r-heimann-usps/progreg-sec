@@ -7,15 +7,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class LogoffController {
 
-    private final SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-
-    @GetMapping("/logoff")
+    @PostMapping("/logoff")
     public String logoff(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        logoutHandler.logout(request, response, authentication);
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
         return "redirect:/logoff-success";
     }
 
