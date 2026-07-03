@@ -100,11 +100,56 @@
                     <!-- Allow builds without web.xml (Servlet 3.0+) -->
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <!-- Apply Maven property substitution inside web.xml
-                         so that ${spring.active.profiles} is replaced. -->
+                         so that ${spring.active.profiles} is replaced.
+                         Default descriptor (websphere): web.xml -->
                     <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <!-- =========================================================
+         Profile-specific web descriptor selection.
+         -Pwebsphere → web.xml       (WebSphere container auth)
+         -Pokta      → web-okta.xml  (Okta/OIDC, no container auth)
+         -Pdb        → web-db.xml    (JDBC auth, no container auth)
+         ========================================================= -->
+    <profiles>
+
+        <profile>
+            <id>okta</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webXml>src/main/webapp/WEB-INF/web-okta.xml</webXml>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>db</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <webXml>src/main/webapp/WEB-INF/web-db.xml</webXml>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
 
 </project>
