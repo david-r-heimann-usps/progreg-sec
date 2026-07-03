@@ -67,7 +67,7 @@ public class DbSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .antMatchers("/public/**", "/error", "/login").permitAll()
+                .antMatchers("/public/**", "/error", "/login", "/logoff-success").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

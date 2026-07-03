@@ -26,7 +26,7 @@ public class WebSphereSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .antMatchers("/public/**", "/error").permitAll()
+                .antMatchers("/public/**", "/error", "/logoff-success").permitAll()
                 .anyRequest().authenticated()
             )
             .jee(jee -> jee

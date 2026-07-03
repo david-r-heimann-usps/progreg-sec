@@ -7,6 +7,7 @@
     <title>Hello</title>
 </head>
 <body>
+<%@ include file="/WEB-INF/jsp/includes/header.jspf" %>
 <h1>${message}</h1>
 <p>This JSP lives in WEB-INF/jsp and is rendered by a Spring MVC controller.</p>
 
