@@ -3,7 +3,7 @@ setlocal
 
 set "PROFILE=%~1"
 if "%PROFILE%"=="" set "PROFILE=websphere"
-set "DEFAULT_PROJECT_DIR=C:\User\tkwtd0\pr"
+set "DEFAULT_PROJECT_DIR=C:\Users\tkwtd0\pr"
 if "%PROJECT_DIR%"=="" set "PROJECT_DIR=%DEFAULT_PROJECT_DIR%"
 if not "%~2"=="" set "PROJECT_DIR=%~2"
 
