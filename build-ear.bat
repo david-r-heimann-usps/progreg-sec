@@ -1,9 +1,11 @@
 @echo off
 setlocal
 
-set "PROJECT_DIR=C:\User\tkwtd0\pr"
 set "PROFILE=%~1"
 if "%PROFILE%"=="" set "PROFILE=websphere"
+set "DEFAULT_PROJECT_DIR=C:\User\tkwtd0\pr"
+if "%PROJECT_DIR%"=="" set "PROJECT_DIR=%DEFAULT_PROJECT_DIR%"
+if not "%~2"=="" set "PROJECT_DIR=%~2"
 
 if defined JAVA_HOME_8 (
     set "JAVA_HOME=%JAVA_HOME_8%"
@@ -42,5 +44,10 @@ if not "%BUILD_RC%"=="0" (
 )
 
 echo Build complete.
-echo EAR: %PROJECT_DIR%\progreg-sec-ear\target\progreg-sec.ear
+set "EAR_PATH=%PROJECT_DIR%\progreg-sec-ear\target\progreg-sec.ear"
+if exist "%EAR_PATH%" (
+    echo EAR: %EAR_PATH%
+) else (
+    echo Build succeeded, but EAR file was not found at "%EAR_PATH%".
+)
 exit /b 0
