@@ -1,5 +1,5 @@
 set "PROFILE=%~1"
-if "%PROFILE%"=="" set "PROFILE=websphere"
+if "%PROFILE%"=="" set "PROFILE=db"
 SET PRMAIN=c:\Users\tkwtd0\pr
 set PATH=%PRMAIN%\apache-maven-3.9.9\bin;%PRMAIN%\jdk-17\bin;%PRMAIN%\nodejs;%PATH%
 set JAVA_HOME=%PRMAIN%\jdk1.8.0

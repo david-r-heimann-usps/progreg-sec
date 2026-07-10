@@ -6,8 +6,11 @@
     <title>Home</title>
 </head>
 <body>
+<a href="${pageContext.request.contextPath}/logoff.action">Log Off</a>
 <h1>${message}</h1>
 <p>This is the home page for the progreg-sec web application.</p>
-<p><a href="${pageContext.request.contextPath}/hello">Go to hello page</a></p>
+<p>${username}</p>
+<p>${roles}</p>
+<p>${token}</p>
 </body>
 </html>

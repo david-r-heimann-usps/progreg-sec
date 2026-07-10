@@ -9,8 +9,8 @@
 
     <!-- ================================================================
          Spring active profile – set at build time by the Maven profile
-         (e.g. mvn package -Pdb) OR override at runtime via the JVM
-         system property:  -Dspring.profiles.active=db
+         (e.g. mvn package -Pokta) OR override at runtime via the JVM
+         system property:  -Dspring.profiles.active=okta
          Valid values: okta | websphere | db
          ================================================================ -->
     <context-param>
@@ -42,21 +42,21 @@
     <!-- ================================================================
          Spring Security – DelegatingFilterProxy for the security filter chain
          ================================================================ -->
-	<filter>
-		<filter-name>RequestLoggingFilter</filter-name>
-		<filter-class>com.progreg.webapp.filter.RequestLoggingFilter</filter-class>
-	</filter>
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
-	<filter-mapping>
+    	
+   	<filter>
 		<filter-name>RequestLoggingFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+		<filter-class>com.progreg.webapp.filter.RequestLoggingFilter</filter-class>
+	</filter>
+    
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
     </filter-mapping>
 
     <!-- ================================================================
@@ -77,10 +77,10 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-	<servlet-mapping>
-		<servlet-name>dispatcher</servlet-name>
-		<url-pattern>*.action</url-pattern>
-	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
 
     <!-- ================================================================
          JDBC DataSource resource reference (used by the db profile).
@@ -95,8 +95,56 @@
         <res-sharing-scope>Shareable</res-sharing-scope>
     </resource-ref>
 
-    <!-- No <security-constraint>, <login-config>, or <security-role> elements:
-         JDBC authentication is handled entirely by Spring Security; no
-         WebSphere container security is needed. -->
+    <!-- ================================================================
+         Java EE Security – used by WebSphere container-managed security
+         (websphere profile).  WebSphere enforces these constraints before
+         the request reaches Spring Security; Spring Security then reads
+         the already-authenticated principal via the JEE pre-auth filter.
+         ================================================================ -->
+
+    <!-- Protect all application resources; any of the declared roles may access. -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Protected Resources</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>NAT_PROGREG_CONTRACT_ADMIN</role-name>
+            <role-name>NAT_PROGREG_GCA_CONTRACT_READ_ONLY_USER</role-name>
+            <role-name>NAT_PROGREG_GEPS_CONTRACT_READ_ONLY_USER</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- Allow unauthenticated access to the login page itself. -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Login Page</web-resource-name>
+            <url-pattern>/login-ws.jsp</url-pattern>
+        </web-resource-collection>
+        <!-- No <auth-constraint> = no authentication required. -->
+    </security-constraint>
+
+    <!-- FORM-based login: WebSphere redirects unauthenticated users to
+         /login.jsp and re-displays it (with ?error) on failure. -->
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>ProgReg Security</realm-name>
+        <form-login-config>
+            <form-login-page>/login-ws.jsp</form-login-page>
+            <form-error-page>/login-ws.jsp?error</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <!-- Role declarations must match the roles used in security-constraint
+         and in WebSphereSecurityConfig#mappableRoles. -->
+    <security-role>
+        <role-name>NAT_PROGREG_CONTRACT_ADMIN</role-name>
+    </security-role>
+    <security-role>
+        <role-name>NAT_PROGREG_GCA_CONTRACT_READ_ONLY_USER</role-name>
+    </security-role>
+    <security-role>
+        <role-name>NAT_PROGREG_GEPS_CONTRACT_READ_ONLY_USER</role-name>
+    </security-role>
 
 </web-app>

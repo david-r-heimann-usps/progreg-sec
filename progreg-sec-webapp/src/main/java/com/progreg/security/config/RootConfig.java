@@ -15,4 +15,8 @@ import org.springframework.context.annotation.Configuration;
     "com.progreg.security.service"
 })
 public class RootConfig {
+	public RootConfig()
+	{
+		System.out.println("RootConfig created");
+	}
 }

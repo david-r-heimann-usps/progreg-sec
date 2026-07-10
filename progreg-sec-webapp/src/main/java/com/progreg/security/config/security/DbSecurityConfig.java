@@ -1,5 +1,10 @@
 package com.progreg.security.config.security;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.selector.ContextSelector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -9,6 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.lang.reflect.Field;
 
 import javax.sql.DataSource;
 
@@ -31,7 +40,37 @@ import javax.sql.DataSource;
 @Configuration
 @Profile("db")
 public class DbSecurityConfig {
+	
+	private Log log =  LogFactory.getLog(getClass());
 
+	public DbSecurityConfig()
+	{
+		log.error("Created DbSecurityConfig");
+		System.out.println(log.getClass());
+		System.out.println(LogFactory.class);
+        try {
+        	for (Field f : log.getClass().getDeclaredFields()) {
+        		f.setAccessible(true);
+        	    System.out.println(f.getName() + " : " + f.getType().getName());
+        	} 
+        	
+  
+	        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+
+	        System.out.println("LoggerContext class      : " + ctx.getClass().getName());
+	        System.out.println("LoggerContext name       : " + ctx.getName());
+	        System.out.println("LoggerContext config loc : " + ctx.getConfigLocation());
+	        System.out.println("LoggerContext external   : " + ctx.getExternalContext());
+	        System.out.println("TCCL                     : " + Thread.currentThread().getContextClassLoader());
+	       
+    	}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		
+        
+	}
     /**
      * Looks up the {@code jdbc/progreg} datasource from JNDI.
      * {@code setResourceRef(true)} prepends {@code java:comp/env/} automatically,
@@ -59,25 +98,29 @@ public class DbSecurityConfig {
      * and user-management service backed by {@code progregDataSource}.
      */
     @Bean
-    public JdbcUserDetailsManager userDetailsManager(DataSource progregDataSource) {
-        return new JdbcUserDetailsManager(progregDataSource);
+    public DbQuery userDetailsManager(DataSource progregDataSource) {
+        return new DbQuery(progregDataSource);
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .antMatchers("/public/**", "/error", "/login").permitAll()
+                .antMatchers("/login-db.action").permitAll()               
                 .anyRequest().authenticated()
             )
+	        .csrf(csrf -> csrf
+	                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+	                //.ignoringRequestMatchers(new AntPathRequestMatcher("/j_security_check"))
+            )           
             .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/", true)
+                .loginPage("/login-db.action")
+                .defaultSuccessUrl("/home.action", true)
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout")
+                .logoutUrl("/logoff-db.action")
+                .logoutSuccessUrl("/login-db.action")
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")

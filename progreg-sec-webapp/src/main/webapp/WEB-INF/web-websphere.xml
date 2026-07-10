@@ -33,6 +33,11 @@
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+	<listener>
+	    <listener-class>
+	        org.springframework.web.context.request.RequestContextListener
+	    </listener-class>
+	</listener>
 
     <!-- ================================================================
          Spring Security – DelegatingFilterProxy for the security filter chain
@@ -41,6 +46,12 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
     </filter>
+    	
+   	<filter>
+		<filter-name>RequestLoggingFilter</filter-name>
+		<filter-class>com.progreg.webapp.filter.RequestLoggingFilter</filter-class>
+	</filter>
+    
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <url-pattern>/*</url-pattern>
@@ -68,7 +79,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
-        <url-pattern>/</url-pattern>
+        <url-pattern>*.action</url-pattern>
     </servlet-mapping>
 
     <!-- ================================================================
@@ -98,9 +109,9 @@
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
-            <role-name>USER</role-name>
-            <role-name>ADMIN</role-name>
-            <role-name>MANAGER</role-name>
+            <role-name>NAT_PROGREG_CONTRACT_ADMIN</role-name>
+            <role-name>NAT_PROGREG_GCA_CONTRACT_READ_ONLY_USER</role-name>
+            <role-name>NAT_PROGREG_GEPS_CONTRACT_READ_ONLY_USER</role-name>
         </auth-constraint>
     </security-constraint>
 
@@ -108,7 +119,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>Login Page</web-resource-name>
-            <url-pattern>/login.jsp</url-pattern>
+            <url-pattern>/login-ws.jsp</url-pattern>
         </web-resource-collection>
         <!-- No <auth-constraint> = no authentication required. -->
     </security-constraint>
@@ -119,21 +130,21 @@
         <auth-method>FORM</auth-method>
         <realm-name>ProgReg Security</realm-name>
         <form-login-config>
-            <form-login-page>/login.jsp</form-login-page>
-            <form-error-page>/login.jsp?error</form-error-page>
+            <form-login-page>/login-ws.jsp</form-login-page>
+            <form-error-page>/login-ws.jsp?error</form-error-page>
         </form-login-config>
     </login-config>
 
     <!-- Role declarations must match the roles used in security-constraint
          and in WebSphereSecurityConfig#mappableRoles. -->
     <security-role>
-        <role-name>USER</role-name>
+        <role-name>NAT_PROGREG_CONTRACT_ADMIN</role-name>
     </security-role>
     <security-role>
-        <role-name>ADMIN</role-name>
+        <role-name>NAT_PROGREG_GCA_CONTRACT_READ_ONLY_USER</role-name>
     </security-role>
     <security-role>
-        <role-name>MANAGER</role-name>
+        <role-name>NAT_PROGREG_GEPS_CONTRACT_READ_ONLY_USER</role-name>
     </security-role>
 
 </web-app>
